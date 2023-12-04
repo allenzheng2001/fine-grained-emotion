@@ -25,6 +25,7 @@ def train_model():
     num_epochs = 2
 
     for epoch in tqdm(range(num_epochs)):
+        total_loss = 0
         for ex in tqdm(train_loader):
             input = ex["text"]
             input_tokens = (tokenizer(input, return_tensors='pt', truncation=True, padding=True)).to(device)
@@ -34,9 +35,12 @@ def train_model():
             output = model(**input_tokens)
             loss = criterion(output.logits, label.float())
             loss.backward()
-            print(loss)
+            
+            total_loss += loss.item()
 
             optimizer.step()
+
+        print(f"LOSS THIS EPOCH: {total_loss}")
 
 train_model()
         
