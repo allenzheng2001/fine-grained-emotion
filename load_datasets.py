@@ -4,6 +4,8 @@ import numpy as np
 import ast
 from torch.utils.data import Dataset, DataLoader
 
+mode = 'emotions'
+
 class CustomDataset(Dataset):
     def __init__(self, texts, labels):
         """
@@ -48,25 +50,39 @@ def get_data_loader(path, batch_size = 1, label = 'emotions'):
     return loader
 
 def get_appraisal_data_loader(path, label = 'emotions'):
+    print("Not yet supported")
+    return
+
+def get_appraisal_data_dataset(path, label = 'emotions'):
     df = pd.read_csv(path)
-    input_list = [ast.literal_eval(appraisal_vector_str) for appraisal_vector_str in df['appraisal_vector']]
+    input_list = np.array([ast.literal_eval(appraisal_vector_str) for appraisal_vector_str in df['appraisal_vector']])
     if(label == 'intensities'):
-        dataset = zip(input_list, [convert_ivector(gold_intensity_str) for gold_intensity_str in df['gold_intensities_ids']])
+        dataset = list(zip(input_list, np.array([convert_ivector(gold_intensity_str) for gold_intensity_str in df['gold_intensities_ids']])))
     else:
-        dataset = zip(input_list, [convert_evector(gold_emotion_str) for gold_emotion_str in df['gold_emotions_ids']])
+        dataset = list(zip(input_list, np.array([convert_evector(gold_emotion_str) for gold_emotion_str in df['gold_emotions_ids']])))
     return dataset
 
-# eventually gonna distinguish emotion/intensity... 
-train_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/train.csv')
-val_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/val.csv')
-test_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/test.csv')
-all_loader = get_data_loader('CovidET_emotions/CovidET-ALL.csv')
+# eventually gonna distinguish emotion/intensity...
+def get_loader(mode, appraisal_flag):
+    if(not appraisal_flag):
+        train_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/train.csv', label = mode)
+        val_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/val.csv', label = mode)
+        test_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/test.csv', label = mode)
+        all_loader = get_data_loader('CovidET_emotions/CovidET-ALL.csv', label = mode)
+        return train_loader, val_loader, test_loader, all_loader
+    else:
+        train_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/train_w_appraisal.csv', label = mode)
+        val_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/val_w_appraisal.csv', label = mode)
+        test_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/test_w_appraisal.csv', label = mode)
+        all_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL_w_appraisal.csv', label = mode)
+        return train_loader_appr, val_loader_appr, test_loader_appr, all_loader_appr
 
-train_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/train_w_appraisal.csv')
-val_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/val_w_appraisal.csv')
-test_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/test_w_appraisal.csv')
-all_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL_w_appraisal.csv')
+def get_datasets(mode, appraisal_flag):
+        train_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL-train_val_test/train_w_appraisal.csv', label = mode)
+        val_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL-train_val_test/val_w_appraisal.csv', label = mode)
+        test_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL-train_val_test/test_w_appraisal.csv', label = mode)
+        all_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL_w_appraisal.csv', label = mode)
+        return train_loader_appr, val_loader_appr, test_loader_appr, all_loader_appr
 
-for appr_vec, label in train_loader_appr:
-    print(appr_vec)
-    print(label)
+    
+
