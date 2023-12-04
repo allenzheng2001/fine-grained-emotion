@@ -27,7 +27,7 @@ def train_model():
     for epoch in tqdm(range(num_epochs)):
         for ex in tqdm(train_loader):
             input = ex["text"]
-            input_tokens = (tokenizer(input, return_tensors='pt', truncation=True, padding=True)).to_device()
+            input_tokens = (tokenizer(input, return_tensors='pt', truncation=True, padding=True)).to(device)
             label = (ex["label"]).to(device)
 
             optimizer.zero_grad()
