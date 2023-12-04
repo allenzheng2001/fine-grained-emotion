@@ -22,7 +22,7 @@ model.to(device)
 def train_model():
     optimizer = torch.optim.AdamW(model.parameters(), lr=5e-5)
     criterion = nn.BCEWithLogitsLoss()
-    num_epochs = 5
+    num_epochs = 2
 
     for epoch in tqdm(range(num_epochs)):
         for ex in tqdm(train_loader):
@@ -34,6 +34,7 @@ def train_model():
             output = model(**input_tokens)
             loss = criterion(output.logits, label.float())
             loss.backward()
+            print(loss)
 
             optimizer.step()
 
