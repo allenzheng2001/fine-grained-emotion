@@ -39,7 +39,7 @@ def convert_ivector(intensities_str_list):
 
 # Assuming you have train_texts and train_labels
 def get_data_loader(path, batch_size = 1, label = 'emotions'):
-    df = pd.read_csv(path)
+    df = pd.read_csv(path).head(100)
     if(label == 'intensities'):
         dataset = CustomDataset(df['post'], [convert_ivector(gold_intensity_str) for gold_intensity_str in df['gold_intensities_ids']])
     else:
