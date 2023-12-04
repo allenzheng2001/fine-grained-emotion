@@ -6,6 +6,8 @@ fine-grained emotion detection using cognitive appraisal theory
 predict multiclass based off text
 
 # LR:
+next step: read in appraisal vectors
+- fillna(0)?
 
 baseline for just appraisal vectors?
 

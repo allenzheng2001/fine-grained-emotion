@@ -47,7 +47,26 @@ def get_data_loader(path, batch_size = 1, label = 'emotions'):
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     return loader
 
+def get_appraisal_data_loader(path, label = 'emotions'):
+    df = pd.read_csv(path)
+    input_list = [ast.literal_eval(appraisal_vector_str) for appraisal_vector_str in df['appraisal_vector']]
+    if(label == 'intensities'):
+        dataset = zip(input_list, [convert_ivector(gold_intensity_str) for gold_intensity_str in df['gold_intensities_ids']])
+    else:
+        dataset = zip(input_list, [convert_evector(gold_emotion_str) for gold_emotion_str in df['gold_emotions_ids']])
+    return dataset
+
+# eventually gonna distinguish emotion/intensity... 
 train_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/train.csv')
 val_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/val.csv')
 test_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/test.csv')
 all_loader = get_data_loader('CovidET_emotions/CovidET-ALL.csv')
+
+train_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/train_w_appraisal.csv')
+val_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/val_w_appraisal.csv')
+test_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/test_w_appraisal.csv')
+all_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL_w_appraisal.csv')
+
+for appr_vec, label in train_loader_appr:
+    print(appr_vec)
+    print(label)
