@@ -6,16 +6,16 @@ from transformers import BartForSequenceClassification, BartTokenizer, AdamW
 from tqdm import tqdm as tqdm
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print("Using device:", device)
 
 # Replace 'facebook/bart-large-cnn' with the correct model name or path
 model_name = 'facebook/bart-large-cnn'
 # this is a per-dimension binary classification.
 # things tried ... multiclass?
 
-def train_bart(train_loader):
+def train_bart(train_loader, label_type):
+    print("Using device:", device)
     tokenizer = BartTokenizer.from_pretrained(model_name)
-    model = BartForSequenceClassification.from_pretrained(model_name, num_labels=8)
+    model = BartForSequenceClassification.from_pretrained(model_name, num_labels= 8 if label_type == 'emotions' else 24)
     model.to(device)
 
     model.train()
