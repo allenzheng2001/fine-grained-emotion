@@ -39,7 +39,7 @@ os.environ["AZURE_OPENAI_ENDPOINT"] = AZURE_OPENAI_ENDPOINT
 FLAGS = flags.FLAGS
 
 # Define the LLM
-flags.DEFINE_string("model", "gpt-4-1106-preview", "Specify the LLM.")
+flags.DEFINE_string("model", "gpt-4-turbo", "Specify the LLM.")
 
 # Hyper-parameters for LLMs
 flags.DEFINE_float("temperature", 0.1, "The value used to modulate the next token probabilities.")
@@ -47,7 +47,7 @@ flags.DEFINE_integer("max_tokens", 512, "Setting max tokens to generate.")
 flags.DEFINE_integer("seed", 36, "Setting seed for reproducible outputs.")
 
 # Loading data
-flags.DEFINE_string("data", "./CovidET_emotions/CovidET-ALL.csv", "Path pointing to the directory containing the posts and emotion annotations.")
+flags.DEFINE_string("data", "./CovidET_emotions/CovidET-ALL_w_appraisal.csv", "Path pointing to the directory containing the posts and emotion annotations.")
 flags.DEFINE_string("appraisal_questions", "./prompts/appraisal_questions.txt", "File with all appraisal questions.")
 
 # Define experiment mode
@@ -132,10 +132,9 @@ if __name__ == "__main__":
             dimensions_df[dim_file_name[10:-4]] = pd.Series(raw_txt.split('\n'), index = range(1, 25)).apply(lambda line: line[line.find('=') + 1:])
     #display(dimensions_df)
 
+    eval_set = pd.read_csv(FLAGS.data).head(1)
 
-    eval_set = pd.read_csv(FLAGS.data)[["id", "post"]].head(1)
-
-    path = f"""llm_output/{FLAGS.experiment_mode}"""
+    path = f"""llm_output/{FLAGS.experiment_mode}/{"baseline" if FLAGS.use_appraisals == 'n' else "appraisal"}"""
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -203,9 +202,9 @@ if __name__ == "__main__":
             post_responses["llm_intensities_initial_raw"] = step2_output
         
             for dim in range(1, 25):
-                appraisal_combined = row[f"natural_language_dim_{dim}"] + '\n' + row[f"dim_{dim}_rationale"] if FLAGS.use_appraisals == 'y' else ""
+                appraisal_combined = row[f"natural_language_dim{dim}"] + '\n' + row[f"dim{dim}_rationale"] if FLAGS.use_appraisals == 'y' else ""
                 
-                step1_prompt = emotion_detection.build_emotions_iterative_prompt_step1(post, appraisal_analysis = apparaisal_combined, prior_output = step2_output)
+                step1_prompt = emotion_detection.build_emotions_iterative_prompt_step1(post, appraisal_analysis = appraisal_combined, prior_output = step2_output)
                 step1_output = ChatAgent.chat(step1_prompt)
                 print(step1_output)
 
