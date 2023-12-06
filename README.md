@@ -18,5 +18,15 @@ maybe there can be a hybrid with LR?
 
 # LLM w/o appraisals
 
-# LLM w/ appraisals, CoT, self-refinement
+2-step prompting (w/ formatting?):
+1. [POST], select the emotions from a set
+2. from your selections {selections} of emotions, rate
 
+# LLM w/ appraisals, CoT, self-refinement
+- use appraisal embeddings? ratings, rationale, combined?
+- chain of thought:
+    - 7 iterations, one per emotion
+    - follow up with intensity if detected
+- self-refine: keep refining the answer based on appraisal
+
+improvement, use the neuro-symbolic model?

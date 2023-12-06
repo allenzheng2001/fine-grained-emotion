@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import torch
 from tqdm import tqdm as tqdm
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
@@ -15,6 +16,40 @@ def eval_lr(lr, test_set):
     # Calculate evaluation metrics
     accuracy = accuracy_score(all_labels, all_predictions)
     precision = precision_score(all_labels, all_predictions)
+    recall = recall_score(all_labels, all_predictions)
+    f1 = f1_score(all_labels, all_predictions)
+
+    # Print evaluation metrics
+    print(f"Accuracy: {accuracy}")
+    print(f"Precision: {precision}")
+    print(f"Recall: {recall}")
+    print(f"F1 Score: {f1}")
+
+def eval_bart(model, test_set):
+    with torch.no_grad():
+        for ex in test_set:
+            input = ex["text"]
+            input_tokens = (tokenizer(input, return_tensors='pt', truncation=True, padding=True)).to(device)
+            label = (ex["label"]).to(device)
+
+            # Forward pass
+            outputs = model(**input_tokens)
+            logits = outputs.logits
+
+            # Convert logits to binary predictions
+            predictions = (torch.sigmoid(logits) > 0.5).float()
+
+            # Collect labels and predictions
+            all_labels.extend(labels.cpu().numpy())
+            all_predictions.extend(predictions.cpu().numpy())
+
+    # Convert lists to NumPy arrays
+    all_labels = np.array(all_labels)
+    all_predictions = np.array(all_predictions)
+
+    # Calculate evaluation metrics
+    accuracy = accuracy_score(all_labels, all_predictions)
+    precision = precision_score(all_labels, all_predictions,)
     recall = recall_score(all_labels, all_predictions)
     f1 = f1_score(all_labels, all_predictions)
 

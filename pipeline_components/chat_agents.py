@@ -1,6 +1,7 @@
 #==============#
 # Importations #
 #==============#
+import time
 import textwrap
 from pprint import pprint
 from termcolor import colored
@@ -40,21 +41,35 @@ If a question does not make any sense, or is not factually coherent, explain why
 
     def reset(self) -> None:
         self.chat_history = [{"role": "system", "content": self.system_prompt}]
+    
+    def append_history(self, message: str) -> str:
+        self.chat_history.append({"role": "user", "content": message})
 
     def chat(self, message: str) -> str:
         self.chat_history.append({"role": "user", "content": message})
         for role in self.chat_history:
             for key, value in role.items():
                 print(colored(f'{key}:', "red"), colored(f'{value}', "green"))
-        ai_message = self.client.chat.completions.create(
-            model = self.FLAGS.model,
-            messages = self.chat_history,
-            temperature = self.FLAGS.temperature,
-            max_tokens = self.FLAGS.max_tokens,
-            seed = self.FLAGS.seed,
-        ).choices[0].message.content
+        while True:
+            try:
+                ai_message = self.client.chat.completions.create(
+                    model = self.FLAGS.model,
+                    messages = self.chat_history,
+                    temperature = self.FLAGS.temperature,
+                    max_tokens = self.FLAGS.max_tokens,
+                    seed = self.FLAGS.seed,
+                ).choices[0].message.content
 
-        self.chat_history.append({"role": "assistant", "content": ai_message})
+                self.chat_history.append({"role": "assistant", "content": ai_message})
+
+                # If no exception was raised, break out of the loop
+                break
+
+            except Exception as e:
+                sleep_time = 60
+                print(f"OpenAI API Error, retrying in {sleep_time} seconds: {e}")
+                time.sleep(sleep_time)
+
         return ai_message
 
 
@@ -130,6 +145,9 @@ If a question does not make any sense, or is not factually coherent, explain why
         wrapped_text = textwrap.fill(text, width=100)
         print(wrapped_text +'\n\n')
         # return assistant_text
+
+    def append_history(self, message: str) -> str:
+        self.chat_history.append({"role": "user", "content": message})
 
     def chat(self, message: str) -> str:
         template = self.get_prompt(
@@ -213,6 +231,9 @@ If a question does not make any sense, or is not factually coherent, explain why
             final_outputs = self.remove_substring(final_outputs, prompt)
 
         return final_outputs#, outputs
+    
+    def append_history(self, message: str) -> str:
+        self.chat_history.append({"role": "user", "content": message})
 
     def chat(self, message: str) -> str:
         template = self.get_prompt(
