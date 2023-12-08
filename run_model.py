@@ -1,8 +1,7 @@
 import argparse
 from lr import train_lr
 from bart import train_bart
-from bert import train_bert
-from eval import eval_lr
+from eval import eval_lr, eval_bart
 from load_datasets import get_datasets, get_loader
 
 parser = argparse.ArgumentParser(description='Example of using FLAGS in Python.')
@@ -22,6 +21,7 @@ if(model == 'lr'):
     eval_lr(model, test_data)
 elif(model == 'bart'):
     model = train_bart(train_data, label_type = args.labels)
+    eval_bart(model, test_data)
 elif(model == 'bert'):
     model = train_bert(train_data, label_type = args.labels)
 else:

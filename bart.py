@@ -21,11 +21,11 @@ def train_bart(train_loader, label_type):
     model.train()
     optimizer = torch.optim.AdamW(model.parameters(), lr=5e-5)
     criterion = nn.BCEWithLogitsLoss()
-    num_epochs = 2
+    num_epochs = 10
 
     for epoch in tqdm(range(num_epochs)):
         total_loss = 0
-        for ex in tqdm(train_loader):
+        for ex in train_loader:
             input = ex["text"]
             input_tokens = (tokenizer(input, return_tensors='pt', truncation=True, padding=True)).to(device)
             label = (ex["label"]).to(device)

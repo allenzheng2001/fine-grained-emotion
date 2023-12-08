@@ -41,7 +41,7 @@ def convert_ivector(intensities_str_list):
 
 # Assuming you have train_texts and train_labels
 def get_data_loader(path, batch_size = 1, label = 'emotions'):
-    df = pd.read_csv(path).head(100)
+    df = pd.read_csv(path)
     if(label == 'intensities'):
         dataset = CustomDataset(df['post'], [convert_ivector(gold_intensity_str) for gold_intensity_str in df['gold_intensities_ids']])
     else:
@@ -79,25 +79,18 @@ def get_appraisal_data_dataset(path, label = 'emotions'):
 
 # eventually gonna distinguish emotion/intensity...
 def get_loader(mode, appraisal_embed='None'):
-    if(appraisal_embed == 'None'):
-        train_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/train.csv', label = mode)
-        val_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/val.csv', label = mode)
-        test_loader = get_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/test.csv', label = mode)
-        all_loader = get_data_loader('CovidET_emotions/CovidET-ALL.csv', label = mode)
-        return train_loader, val_loader, test_loader, all_loader
-    else:
-        train_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/train_w_appraisal.csv', label = mode, appraisal_embed = appraisal_embed)
-        val_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/val_w_appraisal.csv', label = mode, appraisal_embed = appraisal_embed)
-        test_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/test_w_appraisal.csv', label = mode, appraisal_embed = appraisal_embed)
-        all_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL_w_appraisal.csv', label = mode, appraisal_embed = appraisal_embed)
-        return train_loader_appr, val_loader_appr, test_loader_appr, all_loader_appr
+    train_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/train_w_appraisal.csv', label = mode, appraisal_embed = appraisal_embed)
+    val_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/val_w_appraisal.csv', label = mode, appraisal_embed = appraisal_embed)
+    test_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL-train_val_test/test_w_appraisal.csv', label = mode, appraisal_embed = appraisal_embed)
+    all_loader_appr = get_appraisal_data_loader('CovidET_emotions/CovidET-ALL_w_appraisal.csv', label = mode, appraisal_embed = appraisal_embed)
+    return train_loader_appr, val_loader_appr, test_loader_appr, all_loader_appr
 
 def get_datasets(mode):
-        train_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL-train_val_test/train_w_appraisal.csv', label = mode)
-        val_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL-train_val_test/val_w_appraisal.csv', label = mode)
-        test_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL-train_val_test/test_w_appraisal.csv', label = mode)
-        all_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL_w_appraisal.csv', label = mode)
-        return train_loader_appr, val_loader_appr, test_loader_appr, all_loader_appr
+    train_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL-train_val_test/train_w_appraisal.csv', label = mode)
+    val_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL-train_val_test/val_w_appraisal.csv', label = mode)
+    test_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL-train_val_test/test_w_appraisal.csv', label = mode)
+    all_loader_appr = get_appraisal_data_dataset('CovidET_emotions/CovidET-ALL_w_appraisal.csv', label = mode)
+    return train_loader_appr, val_loader_appr, test_loader_appr, all_loader_appr
 
     
 
