@@ -4,6 +4,8 @@ import torch
 from tqdm import tqdm as tqdm
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def eval_lr(lr, test_set):
     all_labels = np.zeros(1)
     all_predictions = np.zeros(1)
