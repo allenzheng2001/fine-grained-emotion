@@ -32,7 +32,7 @@ def eval_bart(model, tokenizer, test_set):
         for ex in test_set:
             input = ex["text"]
             input_tokens = (tokenizer(input, return_tensors='pt', truncation=True, padding=True)).to(device)
-            label = (ex["label"]).to(device)
+            labels = (ex["label"]).to(device)
 
             # Forward pass
             outputs = model(**input_tokens)
