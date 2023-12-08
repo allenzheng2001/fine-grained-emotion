@@ -25,7 +25,7 @@ def eval_lr(lr, test_set):
     print(f"Recall: {recall}")
     print(f"F1 Score: {f1}")
 
-def eval_bart(model, test_set):
+def eval_bart(model, tokenizer, test_set):
     with torch.no_grad():
         for ex in test_set:
             input = ex["text"]

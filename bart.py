@@ -41,7 +41,7 @@ def train_bart(train_loader, label_type):
 
         print(f"LOSS THIS EPOCH: {total_loss}")
 
-    return model
+    return model, tokenizer
 
 # adjust threshold based on val?
         

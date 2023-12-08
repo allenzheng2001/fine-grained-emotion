@@ -20,8 +20,8 @@ if(model == 'lr'):
     model = train_lr(train_data + val_data)
     eval_lr(model, test_data)
 elif(model == 'bart'):
-    model = train_bart(train_data, label_type = args.labels)
-    eval_bart(model, test_data)
+    model, tokenizer = train_bart(train_data, label_type = args.labels)
+    eval_bart(model, tokenizer, test_data)
 elif(model == 'bert'):
     model = train_bert(train_data, label_type = args.labels)
 else:
