@@ -28,8 +28,8 @@ def eval_lr(lr, test_set):
     print(f"F1 Score: {f1}")
 
 def eval_bart(model, tokenizer, test_set):
-    all_l = [0]
-    all_p = [0]
+    all_l = np.zeros(1)
+    all_p = np.zeros(1)
     with torch.no_grad():
         for ex in test_set:
             input = ex["text"]
@@ -44,15 +44,8 @@ def eval_bart(model, tokenizer, test_set):
             predictions = (torch.sigmoid(logits) > 0.5).float()
 
             # Collect labels and predictions
-            all_l += list(labels.cpu().numpy())
-            all_p += list(predictions.cpu().numpy())
-
-    print(all_l)
-    print(all_p)
-
-    # Convert lists to NumPy arrays
-    all_labels = np.array(all_l)
-    all_predictions = np.array(all_p)
+            all_labels = np.concatenate((all_labels, labels.cpu().numpy()), axis = 0)
+            all_predictions = np.concatenate((all_predictions, predictions.cpu().numpy()), axis = 0)
 
     # Calculate evaluation metrics
     accuracy = accuracy_score(all_labels, all_predictions)
