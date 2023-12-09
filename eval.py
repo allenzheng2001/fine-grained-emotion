@@ -44,8 +44,8 @@ def eval_bart(model, tokenizer, test_set):
             predictions = (torch.sigmoid(logits) > 0.5).float()
 
             # Collect labels and predictions
-            all_labels = np.concatenate((all_labels, labels.cpu().numpy()), axis = 0)
-            all_predictions = np.concatenate((all_predictions, predictions.cpu().numpy()), axis = 0)
+            all_labels = np.concatenate((all_labels, labels.cpu().numpy().ravel()), axis = 0)
+            all_predictions = np.concatenate((all_predictions, predictions.cpu().numpy().ravel()), axis = 0)
 
     # Calculate evaluation metrics
     accuracy = accuracy_score(all_labels, all_predictions)
