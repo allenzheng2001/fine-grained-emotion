@@ -21,7 +21,7 @@ def train_bart(train_loader, label_type):
     model.train()
     optimizer = torch.optim.AdamW(model.parameters(), lr=5e-5)
     criterion = nn.BCEWithLogitsLoss()
-    num_epochs = 1
+    num_epochs = 10
 
     for epoch in tqdm(range(num_epochs)):
         total_loss = 0
