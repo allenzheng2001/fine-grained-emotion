@@ -47,6 +47,9 @@ def eval_bart(model, tokenizer, test_set):
             all_l += list(labels.cpu().numpy())
             all_p += list(predictions.cpu().numpy())
 
+    print(all_l)
+    print(all_p)
+
     # Convert lists to NumPy arrays
     all_labels = np.array(all_l)
     all_predictions = np.array(all_p)
